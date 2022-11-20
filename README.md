@@ -2,7 +2,8 @@
 ### Описание
 Данный проект выполняется для курса Python-разработчик от Яндекс.Практикума
 
-[![Django-app workflow](https://github.com/misterio92/yamdb_final/actions/workflows/
+[![Django-app workflow](https://github.com/misterio92/
+foodgram-project-react/actions/workflows/
 foodgram-project-react_workflow.yml/badge.svg?branch=master)](https://github.com/misterio92/
 foodgram-project-react/actions/workflows/
 foodgram-project-react_workflow.yml)
