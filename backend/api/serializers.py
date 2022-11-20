@@ -1,5 +1,6 @@
+from djoser.serializers import (UserCreateSerializer,
+                                UserSerializer)
 from rest_framework import serializers
-from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework.serializers import (
     ModelSerializer,
     PrimaryKeyRelatedField,
@@ -18,13 +19,20 @@ from recipes.models import (
     ShoppingList,
     Tag
 )
-from users.models import User, Follow
+from users.models import Follow, User
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'password')
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'password'
+        )
 
 
 class UserSerializer(UserSerializer):
