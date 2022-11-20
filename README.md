@@ -3,6 +3,7 @@
 Данный проект выполняется для курса Python-разработчик от Яндекс.Практикума
 
 [![Django-app workflow](https://github.com/misterio92/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?branch=master)]
+(https://github.com/misterio92/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
 
 ### Адрес проекта в облаке
 
