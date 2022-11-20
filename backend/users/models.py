@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from .settings import (EMAIL_MAX_LENGHT, NAME_MAX_LENGHT)
+from .settings import (EMAIL_MAX_LENGHT,
+                       NAME_MAX_LENGHT)
 
 
 class User(AbstractUser):
@@ -11,7 +12,11 @@ class User(AbstractUser):
         unique=True,
         db_index=True,
     )
-    email = models.EmailField('Почта', max_length=EMAIL_MAX_LENGHT, unique=True)
+    email = models.EmailField(
+        'Почта',
+        max_length=EMAIL_MAX_LENGHT,
+        unique=True
+    )
     first_name = models.CharField('Имя', max_length=NAME_MAX_LENGHT)
     last_name = models.CharField('Фамилия', max_length=NAME_MAX_LENGHT)
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
