@@ -2,7 +2,7 @@ version: '3.3'
 services:
 
   frontend:
-    image: kalister/foodgram_frontend:latest
+    image: andreymikh92/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
 
@@ -15,7 +15,7 @@ services:
       - ./.env
 
   backend:
-    image: kalister/foodgram_backend:latest
+    image: andreymikh92/foodgram_backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
