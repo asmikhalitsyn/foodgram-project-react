@@ -1,20 +1,30 @@
-# praktikum_new_diplom
-### Описание
-Данный проект выполняется для курса Python-разработчик от Яндекс.Практикума
+# `Foodgram` - сайт 'Продуктовый помощник'
+#### Описание:
+ Онлайн-сервис и API для него. На этом сервисе пользователи могут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное»,
+ а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 
 [![Django-app workflow](https://github.com/misterio92/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?branch=master)]
 (https://github.com/misterio92/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
 
+#### Технологии:
+- Python
+- Django
+- Django REST Framework
+- PostgreSQL
+- Nginx
+- Gunicorn
+- Docker
+
 ### Адрес проекта в облаке
 
-Проект доступен по [адресу](http://51.250.20.185/) 
+Проект доступен по [адресу](http://51.250.102.3/) 
 
 ## Установка Docker
 Для запуска проекта на cервере необходимо выполнить следующий ряд действий для операционной системы Ubuntu:
 - Сделайте fork репозитория
 - После fork'а склонируйте его себе на компьютер
 ```
-git clone https://github.com/<ваш_username>/yamdb_final.git
+git clone https://github.com/<ваш_username>/foodgram-project-react.git
 ```
 - После этого удалите старые версии Docker(при их наличии) командой
 ```
@@ -97,4 +107,4 @@ docker-compose exec web python manage.py collectstatic --no-input
 ```
 
 ### Автор: [Михалицын Андрей](https://github.com/misterio92)
-http://51.250.20.185/redoc/
+http://51.250.102.3/redoc/
