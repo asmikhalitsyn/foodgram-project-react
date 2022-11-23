@@ -1,6 +1,5 @@
 version: '3.3'
 services:
-
   db:
     image: postgres:13.0-alpine
     restart: always
@@ -28,7 +27,7 @@ services:
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
-      - backend
+      - db
 
   nginx:
     image: nginx:1.19.3
