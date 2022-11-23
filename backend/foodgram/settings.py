@@ -1,14 +1,10 @@
 import os
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
 SECRET_KEY = os.getenv('SECRET_KEY', default='oh4w&ee@&zbq=$mrv(z13q6ww7e13t5c(5vc)zut6my#fkbl^+')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = False
+DEBUG = os.getenv('DEBUG', default=False)
 
 ALLOWED_HOSTS = ['51.250.102.3', 'localhost', '127.0.0.1']
 
