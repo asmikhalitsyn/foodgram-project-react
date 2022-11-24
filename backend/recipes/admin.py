@@ -60,7 +60,7 @@ class FavoriteAdmin(admin.ModelAdmin):
         'recipe',
     )
     list_filter = ('user', 'recipe',)
-    search_fields = ('user', 'recipe',)
+    search_fields = ('user', 'recipe',) #test
 
 
 @admin.register(ShoppingList)
