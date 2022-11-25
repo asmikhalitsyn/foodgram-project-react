@@ -19,10 +19,6 @@ services:
   backend:
     image: andreymikh92/foodgram_backend:latest
     restart: always
-    command: >
-      bash -c "python manage.py migrate &&
-      python manage.py collectstatic --noinput &&
-      gunicorn --bind 0:8000 foodgram.wsgi"
     ports:
       - 8000:8000
     volumes:
