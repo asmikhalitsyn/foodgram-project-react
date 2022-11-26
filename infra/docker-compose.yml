@@ -1,8 +1,6 @@
 version: '3.3'
 services:
 
-# 123123
-
   frontend:
     image: andreymikh92/foodgram_frontend:latest
     volumes:
