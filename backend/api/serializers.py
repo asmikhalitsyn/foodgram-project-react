@@ -1,4 +1,4 @@
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserSerializer
 from rest_framework import serializers
 from rest_framework.serializers import (
     ModelSerializer,
@@ -21,32 +21,27 @@ from recipes.models import (
 from users.models import Follow, User
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'password'
-        )
-
-
-class UserSerializer(UserSerializer):
+class CustomUserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name',
-                  'is_subscribed')
+        fields = (
+            'id',
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'password',
+            'is_subscribed'
+        )
 
-    def get_is_subscribed(self, author):
-        user = self.context.get('request').user
-        return not user.is_anonymous and Follow.objects.filter(
-            user=user,
-            author=author.id
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        if request is None or request.user.is_anonymous:
+            return False
+        return Follow.objects.filter(
+            user=request.user, author=obj
         ).exists()
 
 
