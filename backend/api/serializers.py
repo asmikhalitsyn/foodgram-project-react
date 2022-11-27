@@ -1,17 +1,15 @@
-from rest_framework import exceptions, serializers
+from rest_framework import exceptions
 from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import (
     ModelSerializer,
-    PrimaryKeyRelatedField,
-    ReadOnlyField,
     SerializerMethodField,
     ValidationError
 )
 from rest_framework.validators import UniqueTogetherValidator
 
-from .fields import Base64ImageField, Hex2NameColor
+from .fields import Base64ImageField
 from recipes.models import (
     Favorite,
     Ingredient,

@@ -13,14 +13,12 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from rest_framework.validators import ValidationError
 
 from .filters import IngredientSearchFilter, RecipeFilter
 from .paginations import CustomPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     CreateRecipeSerializer,
-    CreateResponseSerializer,
     FavoriteSerializer,
     FollowSerializer,
     IngredientSerializer,
