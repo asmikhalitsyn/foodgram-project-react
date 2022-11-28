@@ -1,27 +1,26 @@
-from django.urls import include, path, re_path
+from django.urls import include, path
 from rest_framework import routers
 
 from .views import (
-    CustomTokenCreateView,
     IngredientViewSet,
     RecipeViewSet,
-    TagViewSet,
-    UsersViewSet
+    TagsViewSet,
+    SubscriptionViewSet,
+    SubscribeView, FavoriteView
 )
 
 v1_router = routers.DefaultRouter()
-v1_router.register('users', UsersViewSet, basename='users')
 v1_router.register('ingredients', IngredientViewSet, basename='ingredients')
 v1_router.register('recipes', RecipeViewSet, basename='recipes')
-v1_router.register('tags', TagViewSet, basename='tags')
+v1_router.register('tags', TagsViewSet, basename='tags')
 
 app_name = 'api'
 
 urlpatterns = [
-    path('', include(v1_router.urls)),
     path('', include('djoser.urls')),
-    re_path(r"^auth/token/login/?$",
-            CustomTokenCreateView.as_view(),
-            name="login"),
+    path('', include(v1_router.urls)),
+    path('users/subscriptions/', SubscriptionViewSet.as_view()),
+    path('recipes/<int:favorite_id>/favorite/', FavoriteView.as_view()),
     path('auth/', include('djoser.urls.authtoken')),
+    path('users/<int:pk>/subscribe/', SubscribeView.as_view()),
 ]
