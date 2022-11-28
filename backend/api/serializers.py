@@ -1,8 +1,8 @@
 from djoser.serializers import UserSerializer
 from django.db import transaction
-from .fields import Base64ImageField
 from rest_framework import serializers, validators
 
+from .fields import Base64ImageField
 from recipes.models import (
     Favorite,
     Ingredient,

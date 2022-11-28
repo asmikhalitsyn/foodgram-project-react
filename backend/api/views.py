@@ -19,9 +19,16 @@ from recipes.models import (
 )
 from .paginations import CustomPagination
 from .permissions import IsOwnerOrReadOnly
-from .serializers import (AddRecipeSerializer, FavoriteSerializer,
-                          IngredientSerializer, RecipeSerializer,
-                          ShortRecipeSerializer, SubscribeSerializer, SubscriptionSerializer, TagSerializer)
+from .serializers import (
+    AddRecipeSerializer,
+    FavoriteSerializer,
+    IngredientSerializer,
+    RecipeSerializer,
+    ShortRecipeSerializer,
+    SubscribeSerializer,
+    SubscriptionSerializer,
+    TagSerializer
+)
 from .utils import convert_txt
 from users.models import CustomUser, Subscription
 
