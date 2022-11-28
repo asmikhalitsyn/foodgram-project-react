@@ -154,3 +154,4 @@ CORS_URLS_REGEX = r'^/api/.*$'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+SHOPPING_CART_FILE_NAME = 'shopping_list.txt'
