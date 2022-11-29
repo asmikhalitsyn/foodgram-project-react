@@ -1,19 +1,27 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from .settings import EMAIL_MAX_LENGHT, NAME_MAX_LENGHT
 
-class CustomUser(AbstractUser):
-    email = models.EmailField(
-        db_index=True,
-        max_length=254,
+
+class User(AbstractUser):
+    username = models.CharField(
+        'Имя пользователя',
+        max_length=NAME_MAX_LENGHT,
         unique=True,
-        verbose_name='Почта'
+        db_index=True,
     )
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    email = models.EmailField(
+        'Почта',
+        max_length=EMAIL_MAX_LENGHT,
+        unique=True
+    )
+    first_name = models.CharField('Имя', max_length=NAME_MAX_LENGHT)
+    last_name = models.CharField('Фамилия', max_length=NAME_MAX_LENGHT)
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
     class Meta:
+        ordering = ('id',)
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
@@ -21,32 +29,26 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-User = CustomUser
-
-
-class Subscription(models.Model):
+class Follow(models.Model):
     user = models.ForeignKey(
         User,
-        verbose_name='Подписчик',
+        on_delete=models.CASCADE,
         related_name='follower',
-        on_delete=models.CASCADE,
-    )
-    author = models.ForeignKey(
+        verbose_name='Подписчик')
+
+    following = models.ForeignKey(
         User,
-        verbose_name='Подписка',
-        related_name='following',
         on_delete=models.CASCADE,
-    )
+        related_name='following',
+        verbose_name='Автор постов')
 
     class Meta:
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(
-                fields=('user', 'author'),
-                name='unique_follow',
+                fields=['following', 'user'],
+                name='unique_following_user'
             )
         ]
 
     def __str__(self):
-        return f'{self.user} follows {self.author}'
+        return f'{self.user} подписан на: {self.following}'

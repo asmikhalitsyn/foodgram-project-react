@@ -1,9 +1,33 @@
 from django.contrib import admin
 
-from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
-                     ShoppingCart, Tag)
+from .models import (
+    Favorite,
+    Ingredient,
+    IngredientRecipe,
+    Recipe,
+    ShoppingList,
+    Tag
+)
 
 
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'name',
+        'measurement_unit',
+    )
+    search_fields = ('name',)
+    list_filter = ('name',)
+
+
+class IngredientRecipeInline(admin.TabularInline):
+    model = IngredientRecipe
+    extra = 1
+    verbose_name = 'Ингредиент'
+
+
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
@@ -11,87 +35,40 @@ class TagAdmin(admin.ModelAdmin):
         'color',
         'slug'
     )
+    list_filter = ('name', 'color', 'slug')
     search_fields = ('name', 'color', 'slug')
-    list_editable = ('color',)
-    empty_value_display = '-пусто-'
 
 
-class IngredientsInRecipeInline(admin.TabularInline):
-    model = Recipe.ingredients.through
-    min_num = 1
+@admin.register(Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', 'author', 'favorite_count',)
+    search_fields = ('author', 'name',)
+    list_filter = ('author', 'name', 'tags',)
+    inlines = [
+        IngredientRecipeInline,
+    ]
+
+    def favorite_count(self, obj):
+        return obj.favorit_recipe.count()
 
 
-class IngredientsInRecipeAdmin(admin.ModelAdmin):
-    list_display = (
-        'pk',
-        'ingredient',
-        'recipe',
-        'amount'
-    )
-    search_fields = ('recipe__name', 'ingredient__name')
-
-
+@admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = (
-        'id',
+        'pk',
         'user',
-        'recipe'
+        'recipe',
     )
-    search_fields = (
-        'user__username',
-        'user__email',
-        'recipe__name'
-    )
+    list_filter = ('user', 'recipe',)
+    search_fields = ('user', 'recipe',)
 
 
-class IngredientsAdmin(admin.ModelAdmin):
-    list_display = (
-        'id',
-        'name',
-        'measurement_unit'
-    )
-    search_fields = ('name',)
-    list_filter = ('name',)
-    empty_value_display = '-пусто-'
-
-
-class RecipeAdmin(admin.ModelAdmin):
-    inlines = (IngredientsInRecipeInline,)
-    list_display = (
-        'id',
-        'author',
-        'name',
-        'image',
-        'text',
-    )
-    search_fields = (
-        'name',
-        'author__username',
-        'author__email'
-    )
-    list_filter = ('name', 'author', 'tags')
-
-    def is_favorited(self, instance):
-        return instance.favorite_recipes.count()
-
-
+@admin.register(ShoppingList)
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = (
-        'id',
+        'pk',
         'user',
-        'recipe'
+        'recipe',
     )
-    search_fields = (
-        'user__username',
-        'user__email',
-        'recipe__name'
-    )
-
-
-admin.site.register(Favorite, FavoriteAdmin)
-admin.site.register(Ingredient, IngredientsAdmin)
-admin.site.register(IngredientsInRecipe, IngredientsInRecipeAdmin)
-admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(ShoppingCart, ShoppingCartAdmin)
-
-admin.site.register(Tag, TagAdmin)
+    list_filter = ('user', 'recipe',)
+    search_fields = ('user', 'recipe',)
