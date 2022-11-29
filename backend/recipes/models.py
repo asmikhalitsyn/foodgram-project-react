@@ -1,3 +1,4 @@
+from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
@@ -30,7 +31,13 @@ class Tag(models.Model):
             message='Слаг содержит недопустимый символ',
         )]
     )
-    color = models.CharField('Цвет', max_length=7)
+    color = models.CharField(
+        verbose_name='Цветовой HEX-код',
+        max_length=7,
+        blank=True,
+        null=True,
+        default='FF',
+    )
 
     class Meta:
         ordering = ('id',)

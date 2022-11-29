@@ -199,7 +199,7 @@ class FollowSerializer(ModelSerializer):
 
 class CreateIngredientRecipeSerializer(ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField(write_only=True)
+    amount = serializers.IntegerField()
 
     class Meta:
         model = IngredientRecipe
@@ -224,7 +224,6 @@ class CreateRecipeSerializer(ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
-            'author',
             'ingredients',
             'tags',
             'image',
@@ -269,7 +268,7 @@ class CreateRecipeSerializer(ModelSerializer):
     def create_ingredients(self, ingredients, recipe):
         IngredientRecipe.objects.bulk_create([
             IngredientRecipe(
-                ingredient=Ingredient.objects.get(id=ingredient.get('id')),
+                ingredient=ingredient['id'],
                 recipe=recipe,
                 amount=ingredient.get('amount')
             )
