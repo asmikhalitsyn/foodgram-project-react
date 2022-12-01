@@ -58,9 +58,8 @@ class TagViewSet(ReadOnlyModelViewSet):
 class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (AllowAny,)
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = IngredientSearchFilter
+    filter_backends = (IngredientSearchFilter,)
+    search_fields = ('^name',)
 
 
 class UsersViewSet(UserViewSet):
@@ -68,7 +67,6 @@ class UsersViewSet(UserViewSet):
 
     @action(methods=['get'], detail=False)
     def subscriptions(self, request):
-        print(request.query_params)
         recipes_limit = request.query_params['recipes_limit']
         authors = User.objects.filter(following__user=request.user)
         result_pages = self.paginate_queryset(
@@ -173,19 +171,6 @@ class RecipeViewSet(ModelViewSet):
             request=request, pk=pk, model=ShoppingList,
             recipe_model=Recipe
         )
-
-    @action(
-        detail=False,
-        methods=['get'],
-        permission_classes=(permissions.IsAuthenticated,)
-    )
-    def shopping_list(self, request, pk):
-
-        if request.method == 'POST':
-            return self.post_method_for_actions(request, pk,
-                                                ShoppingListSerializer)
-        return self.delete_method_for_actions(request, pk,
-                                              'списка покупок', ShoppingList)
 
     @action(
         detail=False,

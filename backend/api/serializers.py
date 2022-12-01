@@ -61,16 +61,6 @@ class TagSerializer(ModelSerializer):
             'slug'
         )
 
-
-class TagField(serializers.SlugRelatedField):
-
-    def to_representation(self, value):
-        request = self.context.get('request')
-        context = {'request': request}
-        serializer = TagSerializer(value, context=context)
-        return serializer.data
-
-
 class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
@@ -81,17 +71,17 @@ class GetIngredientRecipeSerializer(ModelSerializer):
     id = SlugRelatedField(
         slug_field='id',
         read_only=True,
-        source='ingredient.id'
+        source='ingredient'
     )
     name = SlugRelatedField(
         slug_field='name',
         read_only=True,
-        source='ingredient.name'
+        source='ingredient'
     )
     measurement_unit = SlugRelatedField(
         slug_field='measurement_unit',
         read_only=True,
-        source='ingredient.measurement_unit'
+        source='ingredient'
     )
 
     class Meta:
@@ -100,9 +90,7 @@ class GetIngredientRecipeSerializer(ModelSerializer):
 
 
 class RecipeSerializer(ModelSerializer):
-    tags = TagField(
-        slug_field='id', queryset=Tag.objects.all(), many=True
-    )
+    tags = TagSerializer(read_only=True, many=True)
     author = UserSerializer(read_only=True)
     ingredients = GetIngredientRecipeSerializer(
         read_only=True, many=True,
@@ -198,11 +186,11 @@ class FollowSerializer(ModelSerializer):
 
 
 class CreateIngredientRecipeSerializer(ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField()
+    id = serializers.IntegerField(write_only=True)
+    amount = serializers.IntegerField(write_only=True)
 
     class Meta:
-        model = IngredientRecipe
+        model = Ingredient
         fields = ('id', 'amount')
 
 
@@ -224,6 +212,7 @@ class CreateRecipeSerializer(ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
+            'author',
             'ingredients',
             'tags',
             'image',
@@ -268,7 +257,7 @@ class CreateRecipeSerializer(ModelSerializer):
     def create_ingredients(self, ingredients, recipe):
         IngredientRecipe.objects.bulk_create([
             IngredientRecipe(
-                ingredient=ingredient['id'],
+                ingredient=Ingredient.objects.get(id=ingredient.get('id')),
                 recipe=recipe,
                 amount=ingredient.get('amount')
             )

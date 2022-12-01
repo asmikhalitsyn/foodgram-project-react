@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = os.getenv('DEBUG', default=False)
 
 ALLOWED_HOSTS = [
-    '51.250.102.3',
+    '51.250.109.198',
     'localhost',
     '127.0.0.1',
     '*'

@@ -5,6 +5,7 @@ from .models import (
     Ingredient,
     IngredientRecipe,
     Recipe,
+    TagRecipe,
     ShoppingList,
     Tag
 )
@@ -21,10 +22,16 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name',)
 
 
-class IngredientRecipeInline(admin.TabularInline):
-    model = IngredientRecipe
-    extra = 1
-    verbose_name = 'Ингредиент'
+@admin.register(TagRecipe)
+class TagRecipeAdmin(admin.ModelAdmin):
+    list_display = ('tag', 'recipe')
+    empty_value_display = '-пусто-'
+
+
+@admin.register(IngredientRecipe)
+class IngredientRecipeAdmin(admin.ModelAdmin):
+    list_display = ('ingredient', 'recipe')
+    empty_value_display = '-пусто-'
 
 
 @admin.register(Tag)
@@ -44,9 +51,6 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'author', 'favorite_count',)
     search_fields = ('author', 'name',)
     list_filter = ('author', 'name', 'tags',)
-    inlines = [
-        IngredientRecipeInline,
-    ]
 
     def favorite_count(self, obj):
         return obj.favorit_recipe.count()
