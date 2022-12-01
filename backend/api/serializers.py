@@ -53,13 +53,13 @@ class UserSerializer(UserSerializer):
 
 
 class TagSerializer(ModelSerializer):
-
     class Meta:
         model = Tag
         fields = (
             'id', 'name', 'color',
             'slug'
         )
+
 
 class IngredientSerializer(ModelSerializer):
     class Meta:
