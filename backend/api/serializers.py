@@ -64,7 +64,7 @@ class TagSerializer(ModelSerializer):
 class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        fields = ('id', 'name', 'measurement_unit')
 
 
 class GetIngredientRecipeSerializer(ModelSerializer):
@@ -94,7 +94,7 @@ class RecipeSerializer(ModelSerializer):
     author = UserSerializer(read_only=True)
     ingredients = GetIngredientRecipeSerializer(
         read_only=True, many=True,
-        source='ingredient_amounts'
+        source='ingredients_recipe'
     )
     image = Base64ImageField(use_url=True)
     is_favorited = serializers.SerializerMethodField()

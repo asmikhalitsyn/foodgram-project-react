@@ -9,12 +9,13 @@ from djoser.conf import settings
 from djoser.views import UserViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from .filters import IngredientSearchFilter, RecipeFilter
+from .filters import AuthorAndTagFilter, IngredientSearchFilter
 from .paginations import CustomPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
@@ -114,8 +115,8 @@ class RecipeViewSet(ModelViewSet):
         permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly
     )
     pagination_class = CustomPagination
-    filter_backends = [DjangoFilterBackend, ]
-    filterset_class = RecipeFilter
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = AuthorAndTagFilter
 
     def get_serializer_class(self):
 
