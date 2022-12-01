@@ -28,6 +28,5 @@ class AuthorAndTagFilter(FilterSet):
         fields = ('tags', 'author')
 
 
-
 class IngredientSearchFilter(SearchFilter):
     search_param = 'name'
