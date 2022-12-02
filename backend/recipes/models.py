@@ -30,13 +30,7 @@ class Tag(models.Model):
             message='Слаг содержит недопустимый символ',
         )]
     )
-    color = models.CharField(
-        verbose_name='Цветовой HEX-код',
-        max_length=7,
-        blank=True,
-        null=True,
-        default='FF',
-    )
+    color = models.CharField('Цвет', max_length=7)
 
     class Meta:
         ordering = ('id',)
@@ -74,7 +68,6 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag,
         related_name='recipes',
-        through='TagRecipe',
         verbose_name='Теги'
     )
     pub_date = models.DateTimeField(
@@ -90,17 +83,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class TagRecipe(models.Model):
-    tag = models.ForeignKey(
-        Tag,
-        on_delete=models.CASCADE,
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-    )
 
 
 class IngredientRecipe(models.Model):

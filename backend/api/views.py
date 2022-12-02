@@ -9,12 +9,12 @@ from djoser.conf import settings
 from djoser.views import UserViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from .filters import AuthorAndTagFilter, IngredientSearchFilter
+from .filters import IngredientSearchFilter, RecipeFilter
 from .paginations import CustomPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
@@ -23,6 +23,7 @@ from .serializers import (
     FollowSerializer,
     IngredientSerializer,
     RecipeSerializer,
+    ShoppingCartSerializer,
     SubscriptionShowSerializer,
     TagSerializer
 )
@@ -57,8 +58,8 @@ class TagViewSet(ReadOnlyModelViewSet):
 class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (IngredientSearchFilter,)
-    search_fields = ('^name',)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientSearchFilter
 
 
 class UsersViewSet(UserViewSet):
@@ -66,6 +67,7 @@ class UsersViewSet(UserViewSet):
 
     @action(methods=['get'], detail=False)
     def subscriptions(self, request):
+
         recipes_limit = request.query_params['recipes_limit']
         authors = User.objects.filter(following__user=request.user)
         result_pages = self.paginate_queryset(
@@ -110,15 +112,18 @@ class UsersViewSet(UserViewSet):
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly
+    )
     pagination_class = CustomPagination
-    filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_class = AuthorAndTagFilter
+    filterset_class = RecipeFilter
+    filter_backends = [DjangoFilterBackend, ]
 
     def get_serializer_class(self):
-        if self.request.method in ['PUT', 'POST', 'PATCH']:
-            return CreateRecipeSerializer
-        return RecipeSerializer
+
+        if self.request.method in SAFE_METHODS:
+            return RecipeSerializer
+        return CreateRecipeSerializer
 
     def add_delete_recipe_from_favorite_or_list(self, request,
                                                 pk, model, recipe_model):
@@ -167,6 +172,19 @@ class RecipeViewSet(ModelViewSet):
             request=request, pk=pk, model=ShoppingCart,
             recipe_model=Recipe
         )
+
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=(permissions.IsAuthenticated,)
+    )
+    def shopping_cart(self, request, pk):
+
+        if request.method == 'POST':
+            return self.post_method_for_actions(request, pk,
+                                                ShoppingCartSerializer)
+        return self.delete_method_for_actions(request, pk,
+                                              'списка покупок', ShoppingCart)
 
     @action(
         detail=False,

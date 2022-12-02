@@ -10,12 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = os.getenv('DEBUG', default=False)
 
-ALLOWED_HOSTS = [
-    '51.250.31.177',
-    'localhost',
-    '127.0.0.1',
-    '*'
-]
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -108,6 +103,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -116,6 +112,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
 
 DJOSER = {
     'HIDE_USERS': False,
@@ -133,7 +130,7 @@ DJOSER = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'http://51.250.31.177:8000',
+    'http://localhost:3000',
 ]
 CORS_URLS_REGEX = r'^/api/.*$'
 

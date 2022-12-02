@@ -53,6 +53,7 @@ class UserSerializer(UserSerializer):
 
 
 class TagSerializer(ModelSerializer):
+
     class Meta:
         model = Tag
         fields = (
@@ -64,7 +65,7 @@ class TagSerializer(ModelSerializer):
 class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit')
+        fields = '__all__'
 
 
 class GetIngredientRecipeSerializer(ModelSerializer):
@@ -98,7 +99,7 @@ class RecipeSerializer(ModelSerializer):
     )
     image = Base64ImageField(use_url=True)
     is_favorited = serializers.SerializerMethodField()
-    is_in_shopping_cart = serializers.SerializerMethodField()
+    is_in_shopping_list = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -303,24 +304,25 @@ class ShoppingCartSerializer(ModelSerializer):
 
 
 class FavoriteSerializer(ModelSerializer):
+    image = Base64ImageField()
+
     class Meta:
-        model = Favorite
-        fields = '__all__'
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Favorite.objects.all(),
-                fields=('user', 'recipe'),
-                message='Рецепт добавлен в избранное'
-            )
-        ]
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class SubscriptionShowSerializer(UserSerializer):
-    recipes = SerializerMethodField()
-    recipes_count = SerializerMethodField()
+    email = serializers.ReadOnlyField(source='author.email')
+    id = serializers.ReadOnlyField(source='author.id')
+    username = serializers.ReadOnlyField(source='author.username')
+    first_name = serializers.ReadOnlyField(source='author.first_name')
+    last_name = serializers.ReadOnlyField(source='author.last_name')
+    is_subscribed = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
+        model = Follow
         fields = (
             'email',
             'id',
@@ -332,12 +334,21 @@ class SubscriptionShowSerializer(UserSerializer):
             'recipes_count'
         )
 
-    def get_recipes(self, object):
-        recipes_limit = self.context.get('recipes_limit')
-        author_recipes = object.recipes.all()[:int(recipes_limit)]
-        return CreateResponseSerializer(
-            author_recipes, many=True
-        ).data
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Follow.objects.filter(
+            author=obj.author,
+            user=obj.user
+        ).exists()
 
-    def get_recipes_count(self, object):
-        return object.recipes.count()
+    def get_recipes(self, obj):
+        limit = self.context.get('request').GET.get('recipes_limit')
+        recipes = Recipe.objects.filter(author=obj.author)
+        if limit:
+            recipes = recipes[:int(limit)]
+        return FavoriteSerializer(recipes, many=True).data
+
+    def get_recipes_count(self, obj):
+        return Recipe.objects.filter(author=obj.author).count()
