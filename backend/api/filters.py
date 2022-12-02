@@ -14,7 +14,7 @@ class RecipeFilter(FilterSet):
         method='get_is_favorit',
     )
     is_in_shopping_cart = filters.BooleanFilter(
-        method='get_is_in_shopping_list'
+        method='get_is_in_shopping_cart'
     )
     tags = filters.ModelMultipleChoiceFilter(
         field_name='tags__slug',
@@ -27,7 +27,7 @@ class RecipeFilter(FilterSet):
             return queryset.filter(favorit_recipe__user=self.request.user)
         return queryset
 
-    def get_is_in_shopping_list(self, queryset, value):
+    def get_is_in_shopping_cart(self, queryset, value):
         if self.request.user.is_authenticated and value:
             return queryset.filter(shopping__user=self.request.user)
         return queryset

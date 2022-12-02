@@ -99,7 +99,7 @@ class RecipeSerializer(ModelSerializer):
     )
     image = Base64ImageField(use_url=True)
     is_favorited = serializers.SerializerMethodField()
-    is_in_shopping_list = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
