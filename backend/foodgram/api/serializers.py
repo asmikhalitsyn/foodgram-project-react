@@ -15,7 +15,7 @@ from recipes.models import (
     Ingredient,
     IngredientRecipe,
     Recipe,
-    ShoppingList,
+    ShoppingCart,
     Tag
 )
 from users.models import Follow, User
@@ -98,7 +98,7 @@ class RecipeSerializer(ModelSerializer):
     )
     image = Base64ImageField(use_url=True)
     is_favorited = serializers.SerializerMethodField()
-    is_in_shopping_list = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -108,7 +108,7 @@ class RecipeSerializer(ModelSerializer):
             'author',
             'ingredients',
             'is_favorited',
-            'is_in_shopping_list',
+            'is_in_shopping_cart',
             'name',
             'image',
             'text',
@@ -124,11 +124,11 @@ class RecipeSerializer(ModelSerializer):
             user=user
         ).exists()
 
-    def get_is_in_shopping_list(self, obj):
+    def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
-        return ShoppingList.objects.filter(
+        return ShoppingCart.objects.filter(
             recipe=obj,
             user=user
         ).exists()
@@ -289,13 +289,13 @@ class CreateRecipeSerializer(ModelSerializer):
         return RecipeSerializer(instance, context=self.context).data
 
 
-class ShoppingListSerializer(ModelSerializer):
+class ShoppingCartSerializer(ModelSerializer):
     class Meta:
-        model = ShoppingList
+        model = ShoppingCart
         fields = '__all__'
         validators = [
             UniqueTogetherValidator(
-                queryset=ShoppingList.objects.all(),
+                queryset=ShoppingCart.objects.all(),
                 fields=('user', 'recipe'),
                 message='Рецепт уже добавлен в список покупок'
             )

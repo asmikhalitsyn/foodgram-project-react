@@ -32,7 +32,7 @@ from recipes.models import (
     Ingredient,
     IngredientRecipe,
     Recipe,
-    ShoppingList,
+    ShoppingCart,
     Tag
 )
 from users.models import Follow, User
@@ -166,9 +166,9 @@ class RecipeViewSet(ModelViewSet):
         detail=True,
         permission_classes=(permissions.IsAuthenticated,)
     )
-    def shopping_list(self, request, pk):
+    def shopping_cart(self, request, pk):
         return self.add_delete_recipe_from_favorite_or_list(
-            request=request, pk=pk, model=ShoppingList,
+            request=request, pk=pk, model=ShoppingCart,
             recipe_model=Recipe
         )
 
@@ -177,13 +177,13 @@ class RecipeViewSet(ModelViewSet):
         methods=['get'],
         permission_classes=(permissions.IsAuthenticated,)
     )
-    def download_shopping_list(self, request):
+    def download_shopping_cart(self, request):
 
         user = self.request.user
         if user.is_anonymous:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         ingredients = IngredientRecipe.objects.filter(
-            recipe__shopping_list__user=request.user
+            recipe__shopping__user=request.user
         ).values(
             'ingredient__name', 'ingredient__measurement_unit'
         ).annotate(ingredient_amount=Sum('amount')).values_list(
