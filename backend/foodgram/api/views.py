@@ -51,11 +51,17 @@ class CustomTokenCreateView(views.TokenCreateView):
 
 
 class TagViewSet(ReadOnlyModelViewSet):
+    permission_classes = (
+        permissions.AllowAny
+    )
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
+    permission_classes = (
+        permissions.AllowAny
+    )
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (IngredientSearchFilter,)
@@ -112,7 +118,7 @@ class UsersViewSet(UserViewSet):
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly
+        permissions.AllowAny
     )
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
