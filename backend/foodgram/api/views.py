@@ -17,7 +17,6 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .filters import AuthorAndTagFilter, IngredientSearchFilter
 from .paginations import CustomPagination
-from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     CreateRecipeSerializer,
     FavoriteSerializer,
