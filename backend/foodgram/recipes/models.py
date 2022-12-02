@@ -21,7 +21,7 @@ class Tag(models.Model):
     name = models.CharField(
         'Тег',
         max_length=200)
-    slug = models.CharField(
+    slug = models.SlugField(
         'Слаг',
         max_length=200,
         unique=True,

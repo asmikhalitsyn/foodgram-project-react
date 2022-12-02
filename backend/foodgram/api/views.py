@@ -117,10 +117,9 @@ class RecipeViewSet(ModelViewSet):
     filterset_class = AuthorAndTagFilter
 
     def get_serializer_class(self):
-
-        if self.request.method in SAFE_METHODS:
-            return RecipeSerializer
-        return CreateRecipeSerializer
+        if self.request.method in ['PUT', 'POST', 'PATCH']:
+            return CreateRecipeSerializer
+        return RecipeSerializer
 
     def add_delete_recipe_from_favorite_or_list(self, request,
                                                 pk, model, recipe_model):
