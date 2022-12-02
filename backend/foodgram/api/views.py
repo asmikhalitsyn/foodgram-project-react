@@ -17,6 +17,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .filters import AuthorAndTagFilter, IngredientSearchFilter
 from .paginations import CustomPagination
+from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     CreateRecipeSerializer,
     FavoriteSerializer,
@@ -50,17 +51,11 @@ class CustomTokenCreateView(views.TokenCreateView):
 
 
 class TagViewSet(ReadOnlyModelViewSet):
-    permission_classes = (
-        permissions.AllowAny
-    )
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
-    permission_classes = (
-        permissions.AllowAny
-    )
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (IngredientSearchFilter,)
@@ -117,7 +112,7 @@ class UsersViewSet(UserViewSet):
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (
-        permissions.AllowAny
+         IsAuthorOrReadOnly,
     )
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
