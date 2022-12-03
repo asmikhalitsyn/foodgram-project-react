@@ -9,7 +9,6 @@ from djoser.conf import settings
 from djoser.views import UserViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
