@@ -66,10 +66,9 @@ class Recipe(models.Model):
         verbose_name='Ингредиенты'
     )
     tags = models.ManyToManyField(
-        Tag,
-        verbose_name='Теги',
-        through='TagInRecipe',
-        related_name='recipes'
+        verbose_name='Тег',
+        related_name='recipes',
+        to='Tag',
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
@@ -117,17 +116,6 @@ class IngredientRecipe(models.Model):
 
     def __str__(self):
         return f'{self.recipe} содержит ингредиент {self.ingredient}'
-
-
-class TagInRecipe(models.Model):
-    tag = models.ForeignKey(
-        Tag,
-        on_delete=models.CASCADE,
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-    )
 
 
 class Favorite(models.Model):
