@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
     'django_filters',
-    'corsheaders',
     'djoser',
     'recipes',
     'users',
@@ -33,7 +32,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -129,10 +127,7 @@ DJOSER = {
     }
 }
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-]
-CORS_URLS_REGEX = r'^/api/.*$'
 
-MEDIA_URL = 'http://localhost/media/'
+
+MEDIA_URL = 'http://51.250.31.177/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
