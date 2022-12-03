@@ -290,19 +290,6 @@ class CreateRecipeSerializer(ModelSerializer):
         return RecipeSerializer(instance, context=self.context).data
 
 
-class ShoppingCartSerializer(ModelSerializer):
-    class Meta:
-        model = ShoppingCart
-        fields = '__all__'
-        validators = [
-            UniqueTogetherValidator(
-                queryset=ShoppingCart.objects.all(),
-                fields=('user', 'recipe'),
-                message='Рецепт уже добавлен в список покупок'
-            )
-        ]
-
-
 class FavoriteSerializer(ModelSerializer):
     image = Base64ImageField()
 

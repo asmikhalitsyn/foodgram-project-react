@@ -9,6 +9,7 @@ from djoser.conf import settings
 from djoser.views import UserViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
@@ -23,7 +24,6 @@ from .serializers import (
     FollowSerializer,
     IngredientSerializer,
     RecipeSerializer,
-    ShoppingCartSerializer,
     SubscriptionShowSerializer,
     TagSerializer
 )
@@ -117,7 +117,7 @@ class RecipeViewSet(ModelViewSet):
     )
     pagination_class = CustomPagination
     filterset_class = RecipeFilter
-    filter_backends = [DjangoFilterBackend, ]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
 
     def get_serializer_class(self):
 
@@ -172,19 +172,6 @@ class RecipeViewSet(ModelViewSet):
             request=request, pk=pk, model=ShoppingCart,
             recipe_model=Recipe
         )
-
-    @action(
-        detail=False,
-        methods=['get'],
-        permission_classes=(permissions.IsAuthenticated,)
-    )
-    def shopping_cart(self, request, pk):
-
-        if request.method == 'POST':
-            return self.post_method_for_actions(request, pk,
-                                                ShoppingCartSerializer)
-        return self.delete_method_for_actions(request, pk,
-                                              'списка покупок', ShoppingCart)
 
     @action(
         detail=False,
