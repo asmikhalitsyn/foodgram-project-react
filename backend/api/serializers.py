@@ -49,7 +49,7 @@ class UserSerializer(UserSerializer):
         if user.is_anonymous:
             return False
         return Follow.objects.filter(
-            author=obj,
+            following=obj,
             user=user
         ).exists()
 
