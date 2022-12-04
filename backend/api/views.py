@@ -70,12 +70,20 @@ class UsersViewSet(UserViewSet):
         permission_classes=(permissions.IsAuthenticated,),
     )
     def subscriptions(self, request):
-        queryset = get_list_or_404(Follow, user=request.user)
-        pages = self.paginate_queryset(queryset)
+
+        recipes_limit = request.query_params['recipes_limit']
+        authors = User.objects.filter(following__user=request.user)
+        result_pages = self.paginate_queryset(
+            queryset=authors
+        )
         serializer = SubscriptionShowSerializer(
-            pages,
-            context={'request': request},
-            many=True)
+            result_pages,
+            context={
+                'request': request,
+                'recipes_limit': recipes_limit
+            },
+            many=True
+        )
         return self.get_paginated_response(serializer.data)
 
     @action(
