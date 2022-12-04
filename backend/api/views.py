@@ -67,7 +67,6 @@ class UsersViewSet(UserViewSet):
     @action(
         methods=['get'],
         detail=False,
-        permission_classes=(permissions.IsAuthenticated,),
     )
     def subscriptions(self, request):
 
@@ -89,8 +88,6 @@ class UsersViewSet(UserViewSet):
     @action(
         methods=['post', 'delete'],
         detail=True,
-        permission_classes=(permissions.IsAuthenticated,),
-
     )
     def subscribe(self, request, id):
 

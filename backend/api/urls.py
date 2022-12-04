@@ -1,7 +1,8 @@
-from django.urls import include, path
+from django.urls import include, path, re_path
 from rest_framework import routers
 
 from .views import (
+    CustomTokenCreateView,
     IngredientViewSet,
     RecipeViewSet,
     TagViewSet,
@@ -18,5 +19,9 @@ app_name = 'api'
 
 urlpatterns = [
     path('', include(v1_router.urls)),
+    path('', include('djoser.urls')),
+    re_path(r"^auth/token/login/?$",
+            CustomTokenCreateView.as_view(),
+            name="login"),
     path('auth/', include('djoser.urls.authtoken')),
 ]
