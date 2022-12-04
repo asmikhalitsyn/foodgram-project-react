@@ -2,7 +2,7 @@ import csv
 
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser import utils, views
 from djoser.conf import settings
@@ -64,49 +64,55 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 class UsersViewSet(UserViewSet):
     pagination_class = LimitOffsetPagination
 
-    @action(methods=['get'], detail=False)
+    @action(
+        methods=['get'],
+        detail=False,
+        permission_classes=(permissions.IsAuthenticated,),
+    )
     def subscriptions(self, request):
-
-        recipes_limit = request.query_params['recipes_limit']
-        authors = User.objects.filter(following__user=request.user)
-        result_pages = self.paginate_queryset(
-            queryset=authors
-        )
+        queryset = get_list_or_404(Follow, user=request.user)
+        pages = self.paginate_queryset(queryset)
         serializer = SubscriptionShowSerializer(
-            result_pages,
-            context={
-                'request': request,
-                'recipes_limit': recipes_limit
-            },
-            many=True
-        )
+            pages,
+            context={'request': request},
+            many=True)
         return self.get_paginated_response(serializer.data)
 
-    @action(methods=['post', 'delete'], detail=True)
-    def subscribe(self, request, id):
-
-        if request.method != 'POST':
-            subscription = Follow.objects.filter(
-                user=request.user,
-                following=get_object_or_404(User, id=id)
-            )
-            if subscription.exists():
-                self.perform_destroy(subscription)
-                return Response(status=status.HTTP_204_NO_CONTENT)
+    @action(
+        methods=['post', 'delete'],
+        detail=True,
+        permission_classes=(permissions.IsAuthenticated,)
+    )
+    def subscribe(self, request, pk):
+        user = request.user
+        author = get_object_or_404(User, id=pk)
+        if request.method == 'POST':
+            if user == author:
+                return Response({
+                    'errors': 'Вы не можете подписываться на самого себя'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            if Follow.objects.filter(user=user, author=author).exists():
+                return Response({
+                    'errors': 'Вы уже подписаны на данного пользователя'
+                }, status=status.HTTP_400_BAD_REQUEST)
             return Response(
-                {'errors': 'Вы уже отписаны'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        serializer = FollowSerializer(
-            data={
-                'user': request.user.id,
-                'following': get_object_or_404(User, id=id).id
-            },
-            context={'request': request}
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+                SubscriptionShowSerializer(
+                    Follow.objects.create(user=user, author=author),
+                    context={'request': request}
+                ).data,
+                status=status.HTTP_201_CREATED)
+        if request.method == 'DELETE':
+            if user == author:
+                return Response({
+                    'errors': 'Вы не можете отписываться от самого себя'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            follow = Follow.objects.filter(user=user, author=author)
+            if follow.exists():
+                follow.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({
+                'errors': 'Вы уже отписались'
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RecipeViewSet(ModelViewSet):
