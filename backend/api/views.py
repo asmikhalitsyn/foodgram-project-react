@@ -81,38 +81,33 @@ class UsersViewSet(UserViewSet):
     @action(
         methods=['post', 'delete'],
         detail=True,
-        permission_classes=(permissions.IsAuthenticated,)
+        permission_classes=(permissions.IsAuthenticated,),
+
     )
-    def subscribe(self, request, pk):
-        user = request.user
-        author = get_object_or_404(User, id=pk)
-        if request.method == 'POST':
-            if user == author:
-                return Response({
-                    'errors': 'Вы не можете подписываться на самого себя'
-                }, status=status.HTTP_400_BAD_REQUEST)
-            if Follow.objects.filter(user=user, author=author).exists():
-                return Response({
-                    'errors': 'Вы уже подписаны на данного пользователя'
-                }, status=status.HTTP_400_BAD_REQUEST)
-            return Response(
-                SubscriptionShowSerializer(
-                    Follow.objects.create(user=user, author=author),
-                    context={'request': request}
-                ).data,
-                status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
-            if user == author:
-                return Response({
-                    'errors': 'Вы не можете отписываться от самого себя'
-                }, status=status.HTTP_400_BAD_REQUEST)
-            follow = Follow.objects.filter(user=user, author=author)
-            if follow.exists():
-                follow.delete()
+    def subscribe(self, request, id):
+
+        if request.method != 'POST':
+            subscription = Follow.objects.filter(
+                user=request.user,
+                following=get_object_or_404(User, id=id)
+            )
+            if subscription.exists():
+                self.perform_destroy(subscription)
                 return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response({
-                'errors': 'Вы уже отписались'
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'errors': 'Вы уже отписаны'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer = FollowSerializer(
+            data={
+                'user': request.user.id,
+                'following': get_object_or_404(User, id=id).id
+            },
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class RecipeViewSet(ModelViewSet):
