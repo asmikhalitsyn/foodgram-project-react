@@ -4,7 +4,7 @@
  а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 
 [![Django-app workflow](https://github.com/asmikhalitsyn/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?branch=master)]
-(https://github.com/misterio92/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
+(https://github.com/asmikhalitsyn/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
 
 #### Технологии:
 - Python
