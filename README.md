@@ -3,7 +3,7 @@
  Онлайн-сервис и API для него. На этом сервисе пользователи могут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное»,
  а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 
-[![Django-app workflow](https://github.com/misterio92/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?branch=master)]
+[![Django-app workflow](https://github.com/asmikhalitsyn/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?branch=master)]
 (https://github.com/misterio92/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
 
 #### Технологии:
